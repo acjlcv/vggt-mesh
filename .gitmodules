@@ -4,3 +4,6 @@
 [submodule "third_party/losf"]
 	path = third_party/losf
 	url = https://github.com/acjlcv/LoSF.git
+[submodule "third_party/cut3r"]
+	path = third_party/cut3r
+	url = https://github.com/acjlcv/CUT3R.git
