@@ -95,7 +95,7 @@ class VGGT_Udf(nn.Module):
 
         #losf udf predictions
         pred_udf = np.zeros(num_queries, dtype=np.float32)
-        for i in range(losf_num_batches):
+        for i in tqdm(range(losf_num_batches)):
             start = i * losf_batch_size
             end = np.min([start + losf_batch_size, num_queries])
             pred_udf_batch, displacements = self.losf(
