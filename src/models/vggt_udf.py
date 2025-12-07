@@ -125,4 +125,4 @@ class VGGT_Udf(nn.Module):
         end = time.time()
         print(f"losf: post proc done {end - start}")
 
-        return proc_pcd, udf
+        return proc_pcd, udf, conf_mask

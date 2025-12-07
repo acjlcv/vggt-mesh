@@ -7,6 +7,7 @@ from utils.chamfer_distance import get_cd_loss
 import viser
 import os
 import glob
+import numpy as np
 
 import time
 
@@ -15,19 +16,24 @@ def evaluate(images : torch.Tensor, device="cuda"):
     model = VGGT_Udf(use_pretune=True).to(device)
     model.eval()
 
-
     images.to(device)
-    pcd, udf = model(images)
+    pcd, udf, color_mask = model(images)
 
     print("dcudf: start")
     start = time.time()
     pred_mesh = extract_mesh(udf, device=device)
-    loss = get_cd_loss(pcd, pred_mesh, device=device)
+
+    pcd = pcd.cpu().detach().numpy()
+    loss = get_cd_loss(pcd, pred_mesh)
     print(f"cd loss: {loss}")
     end = time.time()
     print(f"dcudf: done {end - start}")
 
-    return pcd, pred_mesh
+    #for coloring purposes
+    colors = images.transpose(0, 2, 3, 1)
+    colors_flat = (colors.reshape(-1, 3) * 255).astype(np.uint8)
+
+    return pcd, pred_mesh, colors_flat[color_mask]
 
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -42,7 +48,7 @@ if __name__ == "__main__":
 
     print("start infer")
     start = time.time()
-    pred_pcd, pred_mesh = evaluate(images=images, device=device)
+    pred_pcd, pred_mesh, pred_colors = evaluate(images=images, device=device)
     end = time.time()
 
     print(f"done infer: {end - start}")
@@ -51,6 +57,7 @@ if __name__ == "__main__":
     server.scene.add_point_cloud(
         name="pred point cloud",
         points=pred_pcd,
+        colors=pred_colors,
         point_size=0.001
     )
 
@@ -60,5 +67,10 @@ if __name__ == "__main__":
     )
 
     print("running server")
+
+    server_url = server.request_share_url()
+
+    print(f"viser server url: {server_url}")
+
     while True:
         pass

@@ -73,13 +73,13 @@ def detect_manifold(out_mesh):
 def mesh_cut(mesh,region_rate=20,exp_weight=200):
     # remove small item
     cc = trimesh.graph.connected_components(mesh.face_adjacency, min_len=len(mesh.vertices)//5)
-    print(cc)
+    print(f"mesh_cut connected com{cc}")
     mask = np.zeros(len(mesh.faces), dtype=bool)
     mask[np.concatenate(cc)] = True
     mesh.update_faces(mask)
     mesh.remove_unreferenced_vertices()
     points = np.sum(np.array(mesh.triangles), axis=1)
-    ptree = (points)
+    ptree = cKDTree(points)
     face_neighbor = []
     for i in range(len(points)):
         face_neighbor.append([])
