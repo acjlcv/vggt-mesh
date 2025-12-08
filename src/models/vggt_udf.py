@@ -70,7 +70,7 @@ class VGGT_Udf(nn.Module):
         print("losf: pre proc")
         start = time.time()
 
-        verts, _, _ = normalize_pcd(proc_pcd.detach().numpy())
+        verts, _, _ = normalize_pcd(proc_pcd.cpu().detach().numpy())
 
         #losf preprocessing for patches and queries
         patches = extract_patches(verts, radius=radius, resolution=resolution)

@@ -84,7 +84,7 @@ def extract_patches(verts: torch.Tensor, radius: float=0.018, resolution: int=25
 
     print(np.min(pts_in_lengths), np.max(pts_in_lengths), len(pts_in_lengths))
 
-    filtered_query_idx = np.where((2000 > pts_in_lengths) & (pts_in_lengths > 25))[0]
+    filtered_query_idx = np.where((750 > pts_in_lengths) & (pts_in_lengths > 150))[0]
     filtered_indices = indices[filtered_query_idx]
 
     print(len(filtered_indices))
